@@ -1,0 +1,11 @@
+.player-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border-radius: 15px;
+  background-color: #f0f0f0;
+  box-shadow: 5px 5px 10px #b8b8b8, -5px -5px 10px #ffffff;
+  width: 120%;
+}

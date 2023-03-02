@@ -5,6 +5,7 @@ import TrackSearchResult from "./TrackSearchResult"
 import { Container, Form } from "react-bootstrap"
 import SpotifyWebApi from "spotify-web-api-node"
 import axios from "axios"
+import './Dashboard.css'
 
 const spotifyApi = new SpotifyWebApi({
   clientId: "41e0e5270872455586eb4c11d26e8017",
@@ -25,9 +26,6 @@ export default function Dashboard({ code }) {
   const [currentCharIndex, setCurrentCharIndex] = useState(-1);
   const [currentChar, setCurrentChar] = useState("")
 
-  console.log("lyrics: ", lyrics)
-  console.log("words: ", words)
-
   function chooseTrack(track) {
     setPlayingTrack(track)
     setSearch("")
@@ -35,8 +33,8 @@ export default function Dashboard({ code }) {
   }
 
   function handleKeyDown({keyCode, key}) {
-    // keycode 32 is spacebar
     if(keyCode === 32) {
+      // keycode 32 is spacebar
       checkMatch()
       setCurrentInput("")
       setCurrentWordIndex(currentWordIndex + 1)
@@ -45,8 +43,8 @@ export default function Dashboard({ code }) {
       // keycode 8 is backspace
       setCurrentCharIndex(currentCharIndex - 1)
       setCurrentChar("")
-    }
-      else {
+    } 
+      else if (keyCode !== 16) {
       setCurrentCharIndex(currentCharIndex + 1)
       setCurrentChar(key)
     }
@@ -92,7 +90,7 @@ export default function Dashboard({ code }) {
   }, [playingTrack])
 
    useEffect(() => {
-    setWords(lyrics.split(" "))
+    setWords(lyrics.replace(/\n/g, " ").replace("  ", " ").split(" "))
     setCurrentWordIndex(0)
     setCorrect(0)
     setIncorrect(0)
@@ -105,6 +103,8 @@ export default function Dashboard({ code }) {
     if (!accessToken) return
     spotifyApi.setAccessToken(accessToken)
   }, [accessToken])
+
+
 
   useEffect(() => {
     if (!search) return setSearchResults([])
@@ -137,54 +137,55 @@ export default function Dashboard({ code }) {
   }, [search, accessToken])
 
   return (
-    <Container className="d-flex flex-column py-2" style={{ height: "100vh" }}>
-      <Form.Control
-        type="search"
-        placeholder="Search Songs/Artists"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
+    <Container className="d-flex flex-column py-2 neumorphic-container" style={{ height: "100vh" }}>
+  <Form.Control
+    type="search"
+    placeholder="Search Songs/Artists"
+    value={search}
+    onChange={e => setSearch(e.target.value)}
+    className="search-input"
+  />
+  <div className="flex-grow-1 my-2 neumorphic-scroll neumorphic-text" >
+    {searchResults.map(track => (
+      <TrackSearchResult
+        track={track}
+        key={track.uri}
+        chooseTrack={chooseTrack}
       />
-      <div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
-        {searchResults.map(track => (
-          <TrackSearchResult
-            track={track}
-            key={track.uri}
-            chooseTrack={chooseTrack}
-          />
-        ))}
-        {searchResults.length === 0 && (
-          <div className="text-center" style={{ whiteSpace: "pre" }}>
-            {words.map((word, i) => (
-              <span key={i}>
-                {word.split("").map((char, idx) => (
-                  <span className= {getCharClass(i, idx, char)} key={idx}>{char}</span>
-                ))}
-                {" "}
-              </span>
+    ))}
+    {searchResults.length === 0 && (
+      <div className="text-center neumorphic-text" style={{ whiteSpace: "pre", fontSize: "15px", display: "flex", flexWrap: "wrap" }}>
+        {words.map((word, i) => (
+          <span key={i}>
+            {word.split("").map((char, idx) => (
+              <span className={getCharClass(i, idx, char)} key={idx}>{char}</span>
             ))}
-          </div>
-        )}
+            {" "}
+          </span>
+        ))}
       </div>
-      <div className = "control is-expanded section">
-        <input placeholder="Type along to the lyrics here!" type= "text" className="input" onKeyDown={handleKeyDown} value={currentInput} onChange={(e) => setCurrentInput(e.target.value)} />
+    )}
+  </div>
+  <div className="control section neumorphic-input">
+    <input placeholder="Welcome! Type along to the lyrics here!" type="text" className="input neumorphic-text" onKeyDown={handleKeyDown} value={currentInput} onChange={(e) => setCurrentInput(e.target.value)} />
+  </div>
+  <div className="section neumorphic-stats">
+    <div className="columns">
+      <div className="column has-text-centered">
+        <p className="is-size-8 neumorphic-text">Correct Words:</p>
+        <p className="has-text-primary is-size-4 neumorphic-text">
+          {correct}
+        </p>
       </div>
-      <div className="section">
-        <div className="columns">
-          <div className="column has-text-centered">
-            <p className= "is-size-4">Words per minute:</p>
-            <p className= "has-text-primary is-size-1"> 
-                  {correct}
-            </p>
-          </div>
-          <div className="column has-text-centered">
-            <div className= "is-size-4">Accuracy: </div>
-                  <p className= "has-text-primary is-size-1">
-                    {Math.round(correct / (correct + incorrect) * 100)}%
-                  </p>
-          </div>
+      <div className="column has-text-centered">
+        <div className="is-size-8 neumorphic-text">Accuracy:</div>
+        <p className="has-text-primary is-size-4 neumorphic-text">
+          {Math.round(correct / (correct + incorrect) * 100)}%
+        </p>
       </div>
-        <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
-      </div>
-    </Container>
+    </div>
+    <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
+  </div>
+</Container>
   )
 }
