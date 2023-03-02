@@ -78,7 +78,7 @@ export default function Dashboard({ code }) {
     if (!playingTrack) return
 
     axios
-      .get("https://lyricspeedtyper-api.onrender.com/lyrics", {
+      .get("https://lyricspeedtyper.onrender.com/lyrics", {
         params: {
           track: playingTrack.title,
           artist: playingTrack.artist,
