@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import Axios from "axios";
+import { useState, useEffect } from "react"
 import SpotifyPlayer from "react-spotify-web-playback";
 import "./Player.css"; // import the CSS file for the player
 
@@ -8,20 +7,11 @@ export default function Player({ accessToken, trackUri }) {
 
   useEffect(() => setPlay(true), [trackUri]);
 
-  useEffect(() => {
-    if (!accessToken) return;
-    Axios.post("https://lyricspeedtyper-api.onrender.com/refresh", { refreshToken: accessToken.refreshToken })
-      .then(res => {
-        setAccessToken(res.data.accessToken);
-        setExpiresIn(res.data.expiresIn);
-      })
-      .catch(() => console.log('Error refreshing access token'));
-  }, [accessToken]);
-
+  if (!accessToken) return null
   return (
     <div className="player-container">
       <SpotifyPlayer
-        token={accessToken ? accessToken.accessToken : ""}
+        token={accessToken}
         showSaveIcon
         callback={(state) => {
           if (!state.isPlaying) setPlay(false);
@@ -30,5 +20,5 @@ export default function Player({ accessToken, trackUri }) {
         uris={trackUri ? [trackUri] : []}
       />
     </div>
-  );
+  )
 }
