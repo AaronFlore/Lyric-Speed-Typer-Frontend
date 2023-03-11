@@ -8,7 +8,7 @@ export default function useAuth(code) {
 
   useEffect(() => {
     axios
-      .post("https://lyricspeedtyper-api.onrender.com/login", {
+      .post("https://lyric-speed-typer-api.up.railway.app/login", {
         code,
       })
       .then(res => {
@@ -26,7 +26,7 @@ export default function useAuth(code) {
     if (!refreshToken || !expiresIn) return
     const interval = setInterval(() => {
       axios
-        .post("https://lyricspeedtyper-api.onrender.com/refresh", {
+        .post("https://lyric-speed-typer-api.up.railway.app/refresh", {
           refreshToken,
         })
         .then(res => {
