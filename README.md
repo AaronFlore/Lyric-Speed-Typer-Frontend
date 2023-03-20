@@ -5,7 +5,7 @@
 ![](./public/demo.gif)
 
 ## Tech Stack
-### Frontend: React, JavaScript, HTML, CSS<br /> Backend: Node.js, Express, Spotify Web API
+### Frontend: React, JavaScript, HTML, CSS<br /> Backend: Node.js, Express, JavaScript, Spotify Web API
 ## What I Learned:<br />
 ##### • Authorizing user access with the Spotify Web API via the Express framework and spotify-web-api-node library.<br /> • Having the backend server refresh the user's spotify access token before expiring for uninterrupted app access.<br /> • Building a UI with React Bootstrap and integrating the Spotify API and relevant libraries into that UI<br /> • Deploying and hosting a full stack app online with Render
 #### Please note the online web app can only be accessed by request due to Spotify not allowing their API to be used publicly for apps considered "games".
